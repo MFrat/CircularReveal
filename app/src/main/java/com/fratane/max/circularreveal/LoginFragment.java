@@ -10,7 +10,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 
 
@@ -74,8 +77,13 @@ public class LoginFragment extends Fragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Task task = new Task(rootView);
-                task.execute();
+                if (isValid(rootView)) {
+                    Task task = new Task(rootView);
+                    task.execute();
+                }else{
+                    View login = rootView.findViewById(R.id.login);
+                    View password = rootView.findViewById(R.id.password);
+                }
             }
         };
     }
@@ -157,12 +165,49 @@ public class LoginFragment extends Fragment {
 
             //fadeAnimation(btnLogin, false);
         }
+    }
 
-        private void fadeAnimation(final View v, boolean isFadeOut){
-            ObjectAnimator fadeOut = isFadeOut? ObjectAnimator.ofFloat(v, "alpha",  1f, 0f) :
-                    ObjectAnimator.ofFloat(v, "alpha",  0f, 1f);
-            fadeOut.setDuration(500);
-            fadeOut.start();
+    private boolean isValid(View rootView){
+        EditText login = (EditText) rootView.findViewById(R.id.login);
+        EditText password = (EditText) rootView.findViewById(R.id.password);
+
+        if (login.getText().toString().isEmpty()){
+            shakeView(login);
+            return false;
         }
+
+        if (password.getText().toString().isEmpty()){
+            shakeView(password);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void shakeView(View view){
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
+
+        view.startAnimation(animation);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        View rootView = getView();
+
+        if (rootView == null){
+            return;
+        }
+
+        View btnLogin = rootView.findViewById(R.id.btnLogin);
+        btnLogin.setAlpha(1f);
+    }
+
+    private void fadeAnimation(final View v, boolean isFadeOut){
+        ObjectAnimator fadeOut = isFadeOut? ObjectAnimator.ofFloat(v, "alpha",  1f, 0f) :
+                ObjectAnimator.ofFloat(v, "alpha",  0f, 1f);
+        fadeOut.setDuration(500);
+        fadeOut.start();
     }
 }
