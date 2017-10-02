@@ -1,3 +1,8 @@
+# Samples
+<p align="start">
+  <img src="https://i.imgur.com/ke9psNK.gif" width="300"/>
+</p>
+
 # Quickstart
 
 ## Example
